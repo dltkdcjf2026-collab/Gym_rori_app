@@ -20,5 +20,7 @@ button { width: 100%; padding: 12px; font-size: 1rem; font-weight: 600; border: 
 .metrics { list-style: none; margin: 0; padding: 0; }
 .metrics li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bg); }
 .metrics span { color: var(--muted); }
+#result h2:not(:first-child) { margin-top: 24px; }
+.warn { margin: 10px 0 0; padding: 10px 12px; border-left: 4px solid var(--danger); background: var(--bg); font-size: 0.9rem; }
 .note { margin: 12px 0 0; font-size: 0.85rem; color: var(--muted); }
 .disclaimer { margin-top: 24px; font-size: 0.8rem; color: var(--muted); }
