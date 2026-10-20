@@ -1,0 +1,40 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # 공개 배포 allowlist: 여기에 적은 파일/폴더만 공개된다.
+      # tests/, tools/, .github/ 등은 배포되지 않는다. 새 공개 파일은 아래에 추가해야 한다.
+      - name: Stage allowlisted files
+        run: |
+          mkdir _site
+          cp index.html style.css _site/
+          cp -r src _site/src
+          find _site -type f | sort
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
