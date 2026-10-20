@@ -102,5 +102,6 @@
       goalHtml(g) +
       nutritionHtml(n, g) +
       workoutHtml(w);
+    if (result.scrollIntoView) result.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 })();
