@@ -85,6 +85,4 @@
     eq(v(null).ok, false);
     eq(v(undefined).ok, false);
   });
-
-  T.report();
 })();
