@@ -40,6 +40,24 @@
     return html;
   }
 
+  function nutritionHtml(n, g) {
+    var html = '<h2>식단 가이드</h2><ul class="metrics">' +
+      '<li><span>하루 목표 칼로리</span><strong>' + n.calories + ' kcal</strong></li>' +
+      '<li><span>탄수화물</span><strong>' + n.macros.carbG + ' g</strong></li>' +
+      '<li><span>단백질</span><strong>' + n.macros.proteinG + ' g</strong></li>' +
+      '<li><span>지방</span><strong>' + n.macros.fatG + ' g</strong></li>' +
+      '<li><span>하루 식사 횟수</span><strong>' + n.meals + '끼</strong></li>' +
+      '<li><span>물 섭취</span><strong>약 ' + n.waterL + ' L</strong></li>' +
+      '</ul>';
+    if (n.floored) {
+      html += '<p class="warn">안전을 위해 하루 ' + n.floorKcal + ' kcal 아래로는 줄이지 않았습니다. ' +
+        '그래서 목표 도달 기간이 약 ' + n.weeks + '주로 늘어납니다.</p>';
+    }
+    html += '<ul class="tips">';
+    n.tips.forEach(function (t) { html += '<li>' + t + '</li>'; });
+    return html + '</ul>';
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var res = Fit.validate.validate(readInput());
@@ -50,6 +68,7 @@
     }
     var m = Fit.metrics.compute(res.values);
     var g = Fit.goal.analyze(res.values, m);
+    var n = Fit.nutrition.plan(res.values, m, g);
     result.hidden = false;
     // 아래 값은 모두 계산된 숫자와 고정 문구뿐이다 (사용자 입력 문자열을 넣지 않는다)
     result.innerHTML =
@@ -61,6 +80,7 @@
       '<li><span>하루 소비 열량(TDEE)</span><strong>' + m.tdee + ' kcal</strong></li>' +
       '</ul>' +
       '<p class="note">활동량은 경험 수준(주 ' + m.trainingDays + '일 운동)에서 추정한 값이라 실제와 ±10% 정도 차이가 날 수 있습니다.</p>' +
-      goalHtml(g);
+      goalHtml(g) +
+      nutritionHtml(n, g);
   });
 })();
