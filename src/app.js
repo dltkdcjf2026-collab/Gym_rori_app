@@ -58,6 +58,24 @@
     return html + '</ul>';
   }
 
+  function workoutHtml(w) {
+    var html = '<h2>운동 프로그램</h2>' +
+      '<p class="note">' + w.split + ' · 추천 요일: ' + w.weekdays.join(' / ') + '</p>';
+    w.days.forEach(function (d) {
+      html += '<h3>' + d.label + '</h3><table class="ex"><thead><tr><th>운동</th><th>세트</th><th>반복</th><th>휴식</th></tr></thead><tbody>';
+      d.exercises.forEach(function (e) {
+        html += '<tr><td>' + e.name + '</td><td>' + e.sets + '</td><td>' + e.reps + '</td><td>' + e.restSec + '초</td></tr>';
+      });
+      html += '</tbody></table>';
+    });
+    var c = w.cardio;
+    html += '<h3>유산소</h3><p class="note">주 ' + c.sessionsPerWeek + '회 · 회당 ' + c.minutes + '분 · ' + c.activities.join(', ') +
+      '<br>강도: ' + c.intensity + '<br>' + c.note + '</p>';
+    html += '<h3>운동 시 유의사항</h3><ul class="tips">';
+    w.notes.forEach(function (t) { html += '<li>' + t + '</li>'; });
+    return html + '</ul>';
+  }
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var res = Fit.validate.validate(readInput());
@@ -69,6 +87,7 @@
     var m = Fit.metrics.compute(res.values);
     var g = Fit.goal.analyze(res.values, m);
     var n = Fit.nutrition.plan(res.values, m, g);
+    var w = Fit.workout.plan(res.values, g);
     result.hidden = false;
     // 아래 값은 모두 계산된 숫자와 고정 문구뿐이다 (사용자 입력 문자열을 넣지 않는다)
     result.innerHTML =
@@ -81,6 +100,7 @@
       '</ul>' +
       '<p class="note">활동량은 경험 수준(주 ' + m.trainingDays + '일 운동)에서 추정한 값이라 실제와 ±10% 정도 차이가 날 수 있습니다.</p>' +
       goalHtml(g) +
-      nutritionHtml(n, g);
+      nutritionHtml(n, g) +
+      workoutHtml(w);
   });
 })();
